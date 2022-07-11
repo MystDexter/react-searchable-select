@@ -1,70 +1,227 @@
-# Getting Started with Create React App
+# react-searchable-select
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> A simple and light weight single/multiselect searchable dropdown library.
+> This package is built using the material UI library.
 
-## Available Scripts
+## Dependencies
 
-In the project directory, you can run:
+react: v-18.2.0,
+material-ui/core: v-4.12.4,
+classnames: "^2.3.1"
 
-### `npm start`
+## Install
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```bash
+npm install --save react-searchable-select
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Demo
 
-### `npm test`
+```bash
+npm run storybook
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Usage
 
-### `npm run build`
+## class Component
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```jsx
+import React, { Component } from "react";
+import SearchableSelect from "react-searchable-select";
+class Example extends Component {
+  state = {
+    employees: [],
+    selectedEmployees: [],
+  };
+  componentDidMount() {
+    const employeesData = [
+      { id: 1, name: "John" },
+      { id: 2, name: "Roy" },
+      { id: 3, name: "Albert" },
+    ];
+    this.setState({
+      employees: employeesData,
+    });
+  }
+  render() {
+    return (
+      <SearchableSelect
+        data={this.state.employees}
+        fullWidth
+        searchable
+        searchPlaceHolder='search employee...'
+        itemId='id'
+        itemLabel='name'
+        simpleValue
+        searchByValue='name'
+        itemValue='id'
+        selectedValues={this.state.selectedEmployees}
+        errorText='error'
+        onItemClick={(records) => {
+          this.setState({
+            selectedEmployees: records,
+          });
+        }}
+        onDeleteItem={(deleted) => {
+          console.log("deleted", deleted);
+        }}
+      />
+    );
+  }
+}
+export default Example;
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Functional Component
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Single select
 
-### `npm run eject`
+```jsx
+import React, { useState, useEffect } from "react";
+import SearchableSelect from "react-searchable-select";
+function Example() {
+  const [selectedEmployees, setSelectedEmployees] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const populateData = () => {
+    const employeesData = [
+      { id: 1, name: "Klaus" },
+      { id: 2, name: "Elijah" },
+      { id: 3, name: "Marcel" },
+    ];
+    setEmployees(employeesData);
+  };
+  useEffect(() => {
+    populateData();
+  }, []);
+  return (
+    <SearchableSelect
+      data={employees}
+      fullWidth
+      searchable
+      searchPlaceHolder='search employee...'
+      itemId='id'
+      itemLabel='name'
+      simpleValue
+      searchByValue='name'
+      itemValue='id'
+      selectedValues={selectedEmployees}
+      errorText='error'
+      onItemClick={(emp) => {
+        setSelectedEmployees(emp);
+      }}
+      onDeleteItem={(deleted) => {
+        console.log("deleted", deleted);
+      }}
+    />
+  );
+}
+export default Example;
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Multi select
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```jsx
+import React, { useState, useEffect } from "react";
+import SearchableSelect from "react-searchable-select";
+import { makeStyles } from "@material-ui/core";
+import purple from "@material-ui/core/colors/purple";
+const useStyles = makeStyles((theme) => ({
+  error: {
+    color: theme.palette.error.dark,
+    fontSize: "1em",
+  },
+  checkBox: {
+    color: purple["700"],
+  },
+}));
+function Example() {
+  const [skills, setSkills] = useState([]);
+  const [selectedSkills, setSelectedSkills] = useState([]);
+  const classes = useStyles();
+  const populateData = () => {
+    const skillsData = [
+      { id: 1, name: "React Js" },
+      { id: 2, name: "Angular" },
+      { id: 3, name: "Node JS" },
+    ];
+    setSkills(skillsData);
+  };
+  useEffect(() => {
+    populateData();
+  }, []);
+  return (
+    <SearchableSelect
+      data={skills}
+      fullWidth
+      searchable
+      searchPlaceHolder='search...'
+      itemId='id'
+      itemLabel='name'
+      multiple
+      simpleValue
+      searchByValue='name'
+      itemValue='id'
+      selectedValues={selectedSkills}
+      customStyles={{
+        error: classes.error,
+        checkBox: classes.checkBox,
+      }}
+      errorText='error'
+      onItemClick={(skill) => {
+        setSelectedSkills(skill);
+      }}
+      onDeleteItem={(deleted) => {
+        console.log("deleted", deleted);
+      }}
+    />
+  );
+}
+export default Example;
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Props
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+| Attribute         | Type               | Is Required | Description                                                                                                                                                                                                                                                             | Default Value    |
+| ----------------- | ------------------ | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| data              | array              | Yes         | List of options to display                                                                                                                                                                                                                                              |
+| selectedValues    | array              | No          | List of pre selected options. This can be use while edit functionality                                                                                                                                                                                                  |
+| searchable        | boolean            | No          | By setting this to true dropdown will be searchable.                                                                                                                                                                                                                    | false            |
+| searchPlaceHolder | string             | No          | Placeholder for the search input                                                                                                                                                                                                                                        | Search result    |
+| searchByValue     | string             | No          | The parameter from the data you want to saerch with. for instance your data has name and id fields and you want to search data with id then set it as id                                                                                                                | name             |
+| itemLabel         | string             | Yes         | Label of the dropdown values eg. name                                                                                                                                                                                                                                   |
+| itemId            | number/ string     | Yes         | Unique id from to data which will use as unique key for the list it ca be id from the list of data.                                                                                                                                                                     |
+| simpleValue       | boolean            | No          | If true then provided itemValue will be return in respose from the selected options else whole selected object will return. eg: If item value is 'id' and simple value is true then we will get selected option as list of id from the data.Else will get whole object. |
+| itemValue         | number/string      | No          | It will only work if the simple value is true it can be any property from the data for instance id you will get list of id's on item select.                                                                                                                            |
+| multiple          | boolean            | No          | If true then you can select multiple options                                                                                                                                                                                                                            | false            |
+| showAllButton     | boolean            | No          | If true there there is option "All" to select/deselect all option o one click.                                                                                                                                                                                          | true             |
+| title             | string             | No          | Title display above dropdown                                                                                                                                                                                                                                            | Dropdown         |
+| notFoundText      | string             | No          | Text to display when no item found on search                                                                                                                                                                                                                            | No records found |
+| disabled          | boolean            | No          | Disabled the dropdown if true                                                                                                                                                                                                                                           | False            |
+| error             | boolean            | No          | Display the error when true                                                                                                                                                                                                                                             | False            |
+| errorText         | string             | No          | Text to display when there is an error(error message)                                                                                                                                                                                                                   | Error            |
+| customStyles      | makeStyle Instance | No          | Custom styles for the checkbox below there is list of custom classes which you can modified.                                                                                                                                                                            | {}               |
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Events
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+| Event        | Return         | Description                                                                                                                                                                                                   |
+| ------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| onItemClick  | SeletedItem(s) | Once you click the option in dropdown this method get called It will return the slected item(s). If the simple value is true then it will return the itemId else whole object or array of object if multiple. |
+| onDeleteItem | Deleted item   | It will get trigger when you deSelect the selected item.return value is itemId in case of simple value else whole object.                                                                                     |
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### Custom styles
 
-### Analyzing the Bundle Size
+You can modify the styles of the checkbox or error message by doing something like this
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+customStyles={{
+    error: classes.error,
+    checkBox: classes.checkBox
+}}
+```
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+classes.error and classses.checkbox is your predefined style which you can add in makeStyles.
+Footer
