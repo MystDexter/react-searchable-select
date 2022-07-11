@@ -13,6 +13,7 @@ import {
   OutlinedInput,
   Typography,
 } from "@material-ui/core";
+import classNames from "classnames";
 
 const useStyles = makeStyles((theme) => ({
   outlinedRoot: {
@@ -77,8 +78,8 @@ export default function SearchableSelect(props) {
     selectAllText = "Select all",
     selectAllOptionValue = "-1",
     disabled = false,
-    className,
     customStyles = {
+      checkBox: "",
       error: "",
     },
     clearable = true,
@@ -286,9 +287,21 @@ export default function SearchableSelect(props) {
             {multiselect && (
               <Icon style={{ marginRight: 4 }}>
                 {isItemSelected(val) ? (
-                  <Icon className={classes.checkBox}>check_box</Icon>
+                  <Icon
+                    className={classNames(
+                      classes.checkBox,
+                      customStyles.checkBox
+                    )}
+                  >
+                    check_box
+                  </Icon>
                 ) : (
-                  <Icon className={classes.checkBox}>
+                  <Icon
+                    className={classNames(
+                      classes.checkBox,
+                      customStyles.checkBox
+                    )}
+                  >
                     check_box_outline_blank
                   </Icon>
                 )}
@@ -499,10 +512,10 @@ SearchableSelect.propTypes = {
   secondaryLabel: PropTypes.string,
   customStyles: PropTypes.shape({
     error: PropTypes.string,
+    checkBox: PropTypes.string,
   }),
   variant: PropTypes.string,
   icon: PropTypes.string,
   iconColor: PropTypes.string,
   iconClass: PropTypes.string,
-  className: PropTypes.object,
 };
